@@ -29,6 +29,8 @@
     let SPEED = 0.5;           // base speed
     let LIFETIME = 200;        // lifetime in frames
     let COLOR_PALETTE = ["#FFFFFF"];
+    let MIN_SIZE = 1;          // minimum star size
+    let MAX_SIZE = 3;          // maximum star size
 
     // Configs from query params
     const params = new URLSearchParams(window.location.search);
@@ -43,6 +45,12 @@
     }
     if (params.has("color_palette")) {
       COLOR_PALETTE = params.get("color_palette").split(",").map(c => `#${c.trim()}`);
+    }
+    if (params.has("min_size")) {
+      MIN_SIZE = parseFloat(params.get("min_size"));
+    }
+    if (params.has("max_size")) {
+      MAX_SIZE = parseFloat(params.get("max_size"));
     }
 
     const canvas = document.getElementById("starfield");
@@ -64,8 +72,9 @@
         this.vx = Math.cos(angle) * speed;
         this.vy = Math.sin(angle) * speed;
 
+        this.size = MIN_SIZE + Math.random() * (MAX_SIZE - MIN_SIZE);
+
         // Start each particle with a random offset, but not "mid fade"
-        // This way, every particle still fades in properly
         this.age = Math.floor(Math.random() * LIFETIME);
 
         this.color = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)];
@@ -89,6 +98,7 @@
           const speed = SPEED * (0.5 + Math.random());
           this.vx = Math.cos(angle) * speed;
           this.vy = Math.sin(angle) * speed;
+          this.size = MIN_SIZE + Math.random() * (MAX_SIZE - MIN_SIZE);
           this.color = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)];
         }
       }
@@ -106,7 +116,7 @@
         }
 
         ctx.fillStyle = this.hexToRgba(this.color, alpha);
-        ctx.fillRect(this.x, this.y, 2, 2);
+        ctx.fillRect(this.x, this.y, this.size, this.size);
       }
 
       hexToRgba(hex, alpha) {
@@ -145,4 +155,3 @@
   </script>
 </body>
 </html>
-''
