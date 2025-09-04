@@ -25,12 +25,12 @@
 
   <script>
     // 🔧 Configurable variables
-    let NUM_PARTICLES = 100;   // number of stars
-    let SPEED = 0.5;           // base speed
-    let LIFETIME = 200;        // lifetime in frames
+    let NUM_PARTICLES = 100;   
+    let SPEED = 0.5;           
+    let LIFETIME = 200;        
     let COLOR_PALETTE = ["#FFFFFF"];
-    let MIN_SIZE = 1;          // minimum star size
-    let MAX_SIZE = 3;          // maximum star size
+    let MIN_SIZE = 1;          
+    let MAX_SIZE = 3;          
 
     // Configs from query params
     const params = new URLSearchParams(window.location.search);
@@ -74,7 +74,7 @@
 
         this.size = MIN_SIZE + Math.random() * (MAX_SIZE - MIN_SIZE);
 
-        // Start each particle with a random offset, but not "mid fade"
+        // Start each particle with a random offset
         this.age = Math.floor(Math.random() * LIFETIME);
 
         this.color = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)];
@@ -108,15 +108,17 @@
         let alpha;
 
         if (this.age <= halfLife) {
-          // Fade in (0 → 1)
-          alpha = this.age / halfLife;
+          alpha = this.age / halfLife; // fade in
         } else {
-          // Fade out (1 → 0)
-          alpha = 1 - (this.age - halfLife) / halfLife;
+          alpha = 1 - (this.age - halfLife) / halfLife; // fade out
         }
 
         ctx.fillStyle = this.hexToRgba(this.color, alpha);
-        ctx.fillRect(this.x, this.y, this.size, this.size);
+
+        // 🔹 Draw circle instead of square
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2);
+        ctx.fill();
       }
 
       hexToRgba(hex, alpha) {
